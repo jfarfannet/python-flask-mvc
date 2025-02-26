@@ -1,0 +1,99 @@
+<!-- app/views/templates/orders/cart.html -->
+{% extends "base.html" %}
+
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">Carrito de Compras</h4>
+            </div>
+            <div class="card-body">
+                {% if cart_items %}
+                <form method="POST" action="{{ url_for('order.update_cart') }}">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th style="width: 120px;">Cantidad</th>
+                                    <th class="text-end">Subtotal</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr>
+                                    <td>{{ item.name }}</td>
+                                    <td>${{ item.price }}</td>
+                                    <td>
+                                        <input type="number" name="quantity_{{ item.id }}" class="form-control" value="{{ item.quantity }}" min="1" max="10">
+                                    </td>
+                                    <td class="text-end">${{ item.subtotal }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ url_for('order.remove_from_cart', item_id=item.id) }}" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{{ url_for('restaurant.detail', id=restaurant.id) }}" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left"></i> Seguir Comprando
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-arrow-clockwise"></i> Actualizar Carrito
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="alert alert-info">
+                    Tu carrito está vacío. <a href="{{ url_for('restaurant.index') }}">Buscar restaurantes</a>.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Resumen del Pedido</h5>
+            </div>
+            <div class="card-body">
+                {% if cart_items %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Restaurante:</span>
+                    <span>{{ restaurant.name }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span>${{ total }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Costo de envío:</span>
+                    <span>${{ restaurant.delivery_fee }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total:</span>
+                    <span>${{ total + restaurant.delivery_fee }}</span>
+                </div>
+                <div class="d-grid gap-2 mt-3">
+                    <a href="{{ url_for('order.checkout') }}" class="btn btn-success">
+                        <i class="bi bi-credit-card"></i> Proceder al Pago
+                    </a>
+                </div>
+                {% else %}
+                <p class="text-center text-muted">Añade productos a tu carrito para ver el resumen.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

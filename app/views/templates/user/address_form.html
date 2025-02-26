@@ -1,0 +1,79 @@
+<!-- app/views/templates/user/address_form.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group mb-4">
+            <a href="{{ url_for('user.profile') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-person-circle me-2"></i> Mi Perfil
+            </a>
+            <a href="{{ url_for('user.change_password') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-key me-2"></i> Cambiar Contraseña
+            </a>
+            <a href="{{ url_for('user.addresses') }}" class="list-group-item list-group-item-action active">
+                <i class="bi bi-geo-alt me-2"></i> Mis Direcciones
+            </a>
+            <a href="{{ url_for('order.index') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-receipt me-2"></i> Mis Pedidos
+            </a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.street.label(class="form-label") }}
+                        {{ form.street(class="form-control" + (" is-invalid" if form.street.errors else ""), placeholder="Av. Principal 123, Apto 4B") }}
+                        {% for error in form.street.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.city.label(class="form-label") }}
+                            {{ form.city(class="form-control" + (" is-invalid" if form.city.errors else "")) }}
+                            {% for error in form.city.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.state.label(class="form-label") }}
+                            {{ form.state(class="form-control" + (" is-invalid" if form.state.errors else "")) }}
+                            {% for error in form.state.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.zip_code.label(class="form-label") }}
+                        {{ form.zip_code(class="form-control" + (" is-invalid" if form.zip_code.errors else "")) }}
+                        {% for error in form.zip_code.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3 form-check">
+                        {{ form.is_default(class="form-check-input") }}
+                        {{ form.is_default.label(class="form-check-label") }}
+                        <div class="mb-3 form-check">
+                            {{ form.is_default(class="form-check-input") }}
+                            {{ form.is_default.label(class="form-check-label") }}
+                            <div class="form-text">Si marcas esta opción, esta será tu dirección predeterminada para entregas.</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('user.addresses') }}" class="btn btn-secondary">Cancelar</a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

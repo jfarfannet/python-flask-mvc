@@ -1,0 +1,81 @@
+<!-- app/views/templates/user/profile.html -->
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group mb-4">
+            <a href="{{ url_for('user.profile') }}" class="list-group-item list-group-item-action active">
+                <i class="bi bi-person-circle me-2"></i> Mi Perfil
+            </a>
+            <a href="{{ url_for('user.change_password') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-key me-2"></i> Cambiar Contraseña
+            </a>
+            <a href="{{ url_for('user.addresses') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-geo-alt me-2"></i> Mis Direcciones
+            </a>
+            <a href="{{ url_for('order.index') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-receipt me-2"></i> Mis Pedidos
+            </a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">Información de Perfil</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('user.profile') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Nombre de usuario:</label>
+                        <div class="col-sm-9">
+                            <p class="form-control-plaintext">{{ current_user.username }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Email:</label>
+                        <div class="col-sm-9">
+                            <p class="form-control-plaintext">{{ current_user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">{{ form.first_name.label.text }}:</label>
+                        <div class="col-sm-9">
+                            {{ form.first_name(class="form-control" + (" is-invalid" if form.first_name.errors else "")) }}
+                            {% for error in form.first_name.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">{{ form.last_name.label.text }}:</label>
+                        <div class="col-sm-9">
+                            {{ form.last_name(class="form-control" + (" is-invalid" if form.last_name.errors else "")) }}
+                            {% for error in form.last_name.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">{{ form.phone.label.text }}:</label>
+                        <div class="col-sm-9">
+                            {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else "")) }}
+                            {% for error in form.phone.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-9 offset-sm-3">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,145 @@
+<!-- app/views/templates/restaurants/detail.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ restaurant.name }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                {% if restaurant.image_url %}
+                <img src="{{ restaurant.image_url }}" class="img-fluid rounded" alt="{{ restaurant.name }}">
+                {% else %}
+                <div class="bg-light text-center py-5 rounded">
+                    <i class="bi bi-building fs-1 text-secondary"></i>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-3">{{ restaurant.name }}</h2>
+                    {% if current_user.is_admin %}
+                    <div>
+                        <a href="{{ url_for('restaurant.edit', id=restaurant.id) }}" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a href="{{ url_for('restaurant.delete', id=restaurant.id) }}" class="btn btn-outline-danger" onclick="return confirm('¿Estás seguro de eliminar este restaurante?');">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <p class="card-text">{{ restaurant.description }}</p>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><i class="bi bi-geo-alt me-2"></i> {{ restaurant.address }}</p>
+                        <p><i class="bi bi-telephone me-2"></i> {{ restaurant.phone }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><i class="bi bi-envelope me-2"></i> {{ restaurant.email }}</p>
+                        <p><i class="bi bi-star-fill text-warning me-2"></i> {{ restaurant.rating|round(1) }} / 5.0</p>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between border-top pt-3">
+                    <div>
+                        <span class="badge bg-primary me-2">
+                            <i class="bi bi-clock me-1"></i> Entrega: {{ restaurant.delivery_time }} min
+                        </span>
+                        <span class="badge bg-success">
+                            <i class="bi bi-cash me-1"></i> Envío: ${{ restaurant.delivery_fee }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Menú</h3>
+    {% if current_user.is_admin %}
+    <a href="{{ url_for('menu.add', restaurant_id=restaurant.id) }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Agregar Ítem
+    </a>
+    {% endif %}
+</div>
+
+{% if menu_items %}
+    {% set categories = [] %}
+    {% for item in menu_items %}
+        {% if item.category not in categories %}
+            {% set _ = categories.append(item.category) %}
+        {% endif %}
+    {% endfor %}
+    
+    <ul class="nav nav-tabs mb-4" id="menuTab" role="tablist">
+        {% for category in categories %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ 'active' if loop.first else '' }}" id="{{ category|lower|replace(' ', '-') }}-tab" data-bs-toggle="tab" data-bs-target="#{{ category|lower|replace(' ', '-') }}" type="button" role="tab" aria-controls="{{ category|lower|replace(' ', '-') }}" aria-selected="{{ 'true' if loop.first else 'false' }}">
+                {{ category }}
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <div class="tab-content" id="menuTabContent">
+        {% for category in categories %}
+        <div class="tab-pane fade {{ 'show active' if loop.first else '' }}" id="{{ category|lower|replace(' ', '-') }}" role="tabpanel" aria-labelledby="{{ category|lower|replace(' ', '-') }}-tab">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for item in menu_items if item.category == category %}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                {% if item.image_url %}
+                                <img src="{{ item.image_url }}" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="{{ item.name }}">
+                                {% else %}
+                                <div class="bg-light text-center py-5 h-100">
+                                    <i class="bi bi-cup-hot fs-1 text-secondary"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="card-title">{{ item.name }}</h5>
+                                        <span class="badge bg-primary">${{ item.price }}</span>
+                                    </div>
+                                    <p class="card-text">{{ item.description }}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <form action="{{ url_for('order.add_to_cart', item_id=item.id) }}" method="post">
+                                            <div class="input-group">
+                                                <input type="number" name="quantity" class="form-control form-control-sm" value="1" min="1" max="10" style="width: 60px;">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-cart-plus"></i> Agregar
+                                                </button>
+                                            </div>
+                                        </form>
+                                        {% if current_user.is_admin %}
+                                        <div>
+                                            <a href="{{ url_for('menu.edit', id=item.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{{ url_for('menu.delete', id=item.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Estás seguro de eliminar este ítem?');">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+<div class="alert alert-info">
+    No hay items disponibles en el menú.
+</div>
+{% endif %}
+{% endblock %}

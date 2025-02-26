@@ -1,0 +1,85 @@
+<!-- app/views/templates/orders/history.html -->
+{% extends "base.html" %}
+
+{% block title %}Mis Pedidos{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group mb-4">
+            <a href="{{ url_for('user.profile') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-person-circle me-2"></i> Mi Perfil
+            </a>
+            <a href="{{ url_for('user.change_password') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-key me-2"></i> Cambiar Contraseña
+            </a>
+            <a href="{{ url_for('user.addresses') }}" class="list-group-item list-group-item-action">
+                <i class="bi bi-geo-alt me-2"></i> Mis Direcciones
+            </a>
+            <a href="{{ url_for('order.index') }}" class="list-group-item list-group-item-action active">
+                <i class="bi bi-receipt me-2"></i> Mis Pedidos
+            </a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">Historial de Pedidos</h4>
+            </div>
+            <div class="card-body">
+                {% if orders %}
+                <div class="table-responsive">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nº Pedido</th>
+                                    <th>Restaurante</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>#{{ order.id }}</td>
+                                    <td>{{ order.restaurant.name }}</td>
+                                    <td>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td>${{ order.total_amount }}</td>
+                                    <td>
+                                        {% if order.status == 'pending' %}
+                                        <span class="badge bg-secondary">Pendiente</span>
+                                        {% elif order.status == 'confirmed' %}
+                                        <span class="badge bg-primary">Confirmado</span>
+                                        {% elif order.status == 'preparing' %}
+                                        <span class="badge bg-info">En preparación</span>
+                                        {% elif order.status == 'on_way' %}
+                                        <span class="badge bg-warning">En camino</span>
+                                        {% elif order.status == 'delivered' %}
+                                        <span class="badge bg-success">Entregado</span>
+                                        {% elif order.status == 'cancelled' %}
+                                        <span class="badge bg-danger">Cancelado</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('order.detail', id=order.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        No tienes pedidos registrados. <a href="{{ url_for('restaurant.index') }}">Ordena ahora</a>.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

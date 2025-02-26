@@ -1,0 +1,103 @@
+<!-- app/views/templates/orders/checkout.html -->
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">Finalizar Pedido</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('order.checkout') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label class="form-label">Restaurante</label>
+                        <input type="text" class="form-control" value="{{ restaurant.name }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.address_id.label(class="form-label") }}
+                        {{ form.address_id(class="form-select" + (" is-invalid" if form.address_id.errors else "")) }}
+                        {% for error in form.address_id.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                        <div class="form-text">
+                            <a href="{{ url_for('user.add_address') }}" target="_blank">+ Agregar nueva dirección</a>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.payment_method.label(class="form-label") }}
+                        {{ form.payment_method(class="form-select" + (" is-invalid" if form.payment_method.errors else "")) }}
+                        {% for error in form.payment_method.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.special_instructions.label(class="form-label") }}
+                        {{ form.special_instructions(class="form-control" + (" is-invalid" if form.special_instructions.errors else ""), rows=3, placeholder="Instrucciones especiales para la entrega o la preparación de la comida...") }}
+                        {% for error in form.special_instructions.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('order.cart') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver al Carrito
+                        </a>
+                        {{ form.submit(class="btn btn-success") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Resumen del Pedido</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-center">Cant.</th>
+                                <th class="text-end">Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td class="text-center">{{ item.quantity }}</td>
+                                <td class="text-end">${{ item.subtotal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span>${{ subtotal }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Costo de envío:</span>
+                    <span>${{ delivery_fee }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total:</span>
+                    <span>${{ total }}</span>
+                </div>
+                <div class="mt-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-truck me-2 text-success"></i>
+                        <span>Tiempo estimado de entrega: {{ restaurant.delivery_time }} min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

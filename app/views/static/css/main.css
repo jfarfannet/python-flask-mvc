@@ -1,0 +1,203 @@
+/* app/views/static/css/main.css */
+
+/* Estilos generales */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Estilos de navegación */
+.navbar-brand {
+    font-weight: 700;
+}
+
+/* Estilos de tarjetas */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos para la página de inicio */
+.jumbotron {
+    background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+    padding: 2rem;
+}
+
+/* Estilos para el perfil de usuario */
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+}
+
+/* Estilos para restaurantes */
+.restaurant-card {
+    max-height: 400px;
+}
+
+.restaurant-card img {
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Estilos para el menú */
+.menu-item-image {
+    height: 120px;
+    object-fit: cover;
+}
+
+/* Estilos para pedidos */
+.order-status {
+    font-weight: bold;
+}
+
+/* Estilo para elementos destacados */
+.highlight {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border-left: 4px solid #0d6efd;
+}
+
+/* Estilos para formularios */
+.form-label {
+    font-weight: 500;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: #0d6efd;
+}
+
+/* Animaciones */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Estilos responsivos adicionales */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
+/* Estilos para carrito flotante */
+.cart-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Estilos personalizados para botones de cantidad */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-control .btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-control input {
+    width: 50px;
+    text-align: center;
+}
+
+/* Estilo para categorías de restaurantes */
+.category-badge {
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 0.3rem 0.6rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* Estilos para valoraciones de estrellas */
+.star-rating .bi-star-fill {
+    color: #ffc107;
+}
+
+.star-rating .bi-star {
+    color: #e4e5e9;
+}
+
+/* Estilos para el seguimiento de pedidos */
+.order-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.order-timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #dee2e6;
+    z-index: 0;
+}
+
+.order-timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.order-timeline-item.completed::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #28a745;
+    z-index: 1;
+}
+
+.order-timeline-item.pending::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    z-index: 1;
+}

@@ -1,0 +1,144 @@
+<!-- app/views/templates/orders/detail.html -->
+{% extends "base.html" %}
+
+{% block title %}Pedido #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Detalles del Pedido #{{ order.id }}</h4>
+                <span class="badge {% if order.status == 'pending' %}bg-secondary{% elif order.status == 'confirmed' %}bg-primary{% elif order.status == 'preparing' %}bg-info{% elif order.status == 'on_way' %}bg-warning{% elif order.status == 'delivered' %}bg-success{% elif order.status == 'cancelled' %}bg-danger{% endif %} fs-6">
+                    {% if order.status == 'pending' %}Pendiente{% elif order.status == 'confirmed' %}Confirmado{% elif order.status == 'preparing' %}En preparación{% elif order.status == 'on_way' %}En camino{% elif order.status == 'delivered' %}Entregado{% elif order.status == 'cancelled' %}Cancelado{% endif %}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold">Información del Pedido</h6>
+                        <p class="mb-1">Restaurante: <span class="fw-bold">{{ order.restaurant.name }}</span></p>
+                        <p class="mb-1">Fecha: {{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                        <p class="mb-1">Método de pago: 
+                            {% if order.payment_method == 'cash' %}Efectivo
+                            {% elif order.payment_method == 'credit_card' %}Tarjeta de crédito
+                            {% elif order.payment_method == 'debit_card' %}Tarjeta de débito
+                            {% elif order.payment_method == 'transfer' %}Transferencia
+                            {% else %}{{ order.payment_method }}{% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold">Dirección de Entrega</h6>
+                        <p class="mb-1">{{ order.delivery_address.street }}</p>
+                        <p class="mb-1">{{ order.delivery_address.city }}, {{ order.delivery_address.state }}</p>
+                        <p class="mb-1">CP: {{ order.delivery_address.zip_code }}</p>
+                    </div>
+                </div>
+                
+                <h6 class="fw-bold mb-3">Productos</h6>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-end">Precio unitario</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items %}
+                            <tr>
+                                <td>{{ item.menu_item.name }}</td>
+                                <td class="text-center">{{ item.quantity }}</td>
+                                <td class="text-end">${{ item.price }}</td>
+                                <td class="text-end">${{ item.quantity * item.price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end fw-bold">Subtotal:</td>
+                                <td class="text-end">${{ order.total_amount - order.delivery_fee }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end fw-bold">Costo de envío:</td>
+                                <td class="text-end">${{ order.delivery_fee }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end fw-bold">Total:</td>
+                                <td class="text-end fw-bold">${{ order.total_amount }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                {% if order.status in ['pending', 'confirmed'] %}
+                <div class="mt-3 text-center">
+                    <a href="{{ url_for('order.cancel', id=order.id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de cancelar este pedido?');">
+                        <i class="bi bi-x-circle"></i> Cancelar Pedido
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('order.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver a Mis Pedidos
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Estado del Pedido</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Pedido recibido
+                        </div>
+                        <small>{{ order.created_at.strftime('%H:%M') }}</small>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center {{ 'opacity-50' if order.status == 'pending' or order.status == 'cancelled' }}">
+                        <div>
+                            <i class="bi {{ 'bi-check-circle-fill text-success' if order.status != 'pending' and order.status != 'cancelled' else 'bi-circle' }} me-2"></i> Pedido confirmado
+                        </div>
+                        <small>{{ (order.updated_at if order.status != 'pending' and order.status != 'cancelled' else '-').strftime('%H:%M') if order.status != 'pending' and order.status != 'cancelled' else '-' }}</small>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center {{ 'opacity-50' if order.status in ['pending', 'confirmed', 'cancelled'] }}">
+                        <div>
+                            <i class="bi {{ 'bi-check-circle-fill text-success' if order.status not in ['pending', 'confirmed', 'cancelled'] else 'bi-circle' }} me-2"></i> En preparación
+                        </div>
+                        <small>-</small>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center {{ 'opacity-50' if order.status in ['pending', 'confirmed', 'preparing', 'cancelled'] }}">
+                        <div>
+                            <i class="bi {{ 'bi-check-circle-fill text-success' if order.status not in ['pending', 'confirmed', 'preparing', 'cancelled'] else 'bi-circle' }} me-2"></i> En camino
+                        </div>
+                        <small>-</small>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center {{ 'opacity-50' if order.status != 'delivered' }}">
+                        <div>
+                            <i class="bi {{ 'bi-check-circle-fill text-success' if order.status == 'delivered' else 'bi-circle' }} me-2"></i> Entregado
+                        </div>
+                        <small>-</small>
+                    </li>
+                </ul>
+                
+                {% if order.status == 'cancelled' %}
+                <div class="alert alert-danger mt-3">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Este pedido ha sido cancelado.
+                </div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <h6 class="fw-bold">Tiempo estimado de entrega:</h6>
+                    <p>{{ order.restaurant.delivery_time }} minutos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

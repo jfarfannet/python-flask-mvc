@@ -1,0 +1,72 @@
+<!-- app/views/templates/home.html -->
+{% extends "base.html" %}
+
+{% block title %}Inicio - App de Pedidos{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="jumbotron p-5 mb-4 bg-light rounded-3">
+            <h1 class="display-5 fw-bold">¡Bienvenido a FoodDelivery!</h1>
+            <p class="col-md-8 fs-4">Ordena comida de tus restaurantes favoritos y recíbela en minutos.</p>
+            <a href="{{ url_for('restaurant.index') }}" class="btn btn-primary btn-lg">Ver Restaurantes</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Restaurantes Destacados</h5>
+            </div>
+            <div class="card-body">
+                {% if restaurants.items %}
+                <ul class="list-group list-group-flush">
+                    {% for restaurant in restaurants.items[:5] %}
+                    <li class="list-group-item">
+                        <a href="{{ url_for('restaurant.detail', id=restaurant.id) }}" class="text-decoration-none">
+                            {{ restaurant.name }}
+                        </a>
+                        <span class="badge bg-success float-end">{{ restaurant.rating|round(1) }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="card-text">No hay restaurantes disponibles.</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('restaurant.index') }}" class="btn btn-sm btn-outline-primary">Ver todos</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-search fs-1 text-primary mb-3"></i>
+                <h5 class="card-title">Busca</h5>
+                <p class="card-text">Encuentra el restaurante perfecto para ti con nuestra amplia selección.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-cart-plus fs-1 text-primary mb-3"></i>
+                <h5 class="card-title">Ordena</h5>
+                <p class="card-text">Selecciona tus platos favoritos y añádelos al carrito con un solo clic.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-truck fs-1 text-primary mb-3"></i>
+                <h5 class="card-title">Disfruta</h5>
+                <p class="card-text">Recibe tu pedido en la puerta de tu casa en el menor tiempo posible.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

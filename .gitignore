@@ -1,0 +1,61 @@
+# Entorno virtual
+venv/
+env/
+ENV/
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos de Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Archivos de configuración y variables de entorno
+.env
+instance/
+.webassets-cache
+.flaskenv
+
+# Directorios de carga de archivos
+app/views/static/uploads/
+
+# Logs
+logs/
+*.log
+
+# Archivos de IDE y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# Migraciones de base de datos (opcional, a veces se incluyen)
+# migrations/
+
+# Archivos de distribución
+dist/
+build/
+*.egg-info/
+
+# Archivos temporales
+.tmp/
+.temp/
+
+# Archivos de pytest/cobertura
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+coverage.xml
+*.cover
+
+# Archivos de documentación generados automáticamente
+docs/_build/
