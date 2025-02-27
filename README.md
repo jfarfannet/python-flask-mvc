@@ -1,5 +1,9 @@
+## Crear virtual environment
+
 python -m venv venv
 venv\Scripts\activate
+
+## Activar manejo de JS en windows
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 ejecutar
